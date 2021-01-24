@@ -17,33 +17,50 @@ namespace HMF.Player
 
         [Header("Player fields")]
         [SerializeField] public float movementSpeed = 5f;
+        [SerializeField] public float JumpForce = 10f;
 
         private StateMachine _stateMachine;
 
+        private float distToGround;
+
         public float MoveVal{get; private set;} = 0;
+        public bool Jumped{get; set;} = false;
 
         public void Awake() 
         {
+            distToGround = GetComponent<BoxCollider2D>().bounds.extents.y;
             //Debug.Log("Awake start");
             _stateMachine = new StateMachine();
 
             var idle = new IdlePlayerState();
             var move = new MovePlayerState(this, _rigidbody2D);
             var attack = new AttackPlayerState();
-            var jump = new JumpPlayerState();
+            var jump = new JumpPlayerState(this, _rigidbody2D);
+            var falling = new FallingPlayerState(this);
 
-            _stateMachine.AddAnyTransition(idle, isIdle());
-            _stateMachine.AddAnyTransition(move, moving());
-            At(idle, move, moving());
+            //_stateMachine.AddAnyTransition(idle, isIdle());
+            //_stateMachine.AddAnyTransition(move, moving());
+            At(idle, move, isMoving());
             At(move, idle, isIdle());
+            At(move, move, isMoving());
+            At(idle, jump, isJumping());
+            At(jump, falling, isJumping());
+            At(falling, falling, isFalling());
+            At(falling, idle, isGrounded());
 
 
             void At(IState from, IState to, Func<bool> condition) => _stateMachine.AddTransition(from, to, condition);
 
             Func<bool> isIdle() => () => MoveVal == 0;
-            Func<bool> moving() => () => MoveVal != 0;
+            Func<bool> isMoving() => () => MoveVal != 0;
+            Func<bool> isJumping() => () => Jumped;
+            Func<bool> isFalling() => () => Jumped;
+            Func<bool> isGrounded() => () => Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.1f);
+            
 
             //Debug.Log("Awake end");
+
+            _stateMachine.SetState(idle);
         }
 
         public void MoveInput(InputAction.CallbackContext context)
@@ -56,7 +73,13 @@ namespace HMF.Player
         {
             if (!context.performed) return;
 
-            Debug.Log("Jump");
+            Debug.Log($"Jump first: {Jumped}");
+
+            Jumped = true;
+
+            Debug.Log($"Jump second: {Jumped}");
+
+            //Debug.Log("Jump");
         }
 
         public void Update() => _stateMachine?.Tick();
