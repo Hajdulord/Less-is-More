@@ -10,10 +10,11 @@ namespace HMF.Player
 {
     public class PlayerController : MonoBehaviour
     {   
-        //[Header("Editor references")]
+        [Header("Editor references")]
         //[SerializeField] private Animator _animator = null;
         //[SerializeField] private PlayerInput _playerInput = null;
         [SerializeField] private Rigidbody2D _rigidbody2D = null;
+        [SerializeField] private LayerMask _layerMask;
 
         [Header("Player fields")]
         [SerializeField] public float movementSpeed = 5f;
@@ -32,30 +33,35 @@ namespace HMF.Player
             //Debug.Log("Awake start");
             _stateMachine = new StateMachine();
 
-            var idle = new IdlePlayerState();
+            var idle = new IdlePlayerState(_rigidbody2D);
             var move = new MovePlayerState(this, _rigidbody2D);
             var attack = new AttackPlayerState();
             var jump = new JumpPlayerState(this, _rigidbody2D);
-            var falling = new FallingPlayerState(this);
+            var airborne = new AirbornePlayerState(this);
 
             //_stateMachine.AddAnyTransition(idle, isIdle());
             //_stateMachine.AddAnyTransition(move, moving());
             At(idle, move, isMoving());
             At(move, idle, isIdle());
             At(move, move, isMoving());
+
             At(idle, jump, isJumping());
-            At(jump, falling, isJumping());
-            At(falling, falling, isFalling());
-            At(falling, idle, isGrounded());
+            At(move, jump, isJumping());
+
+            At(jump, airborne, isJumping());
+            At(airborne, airborne, isAirborne());
+
+            At(airborne, idle, isGrounded());
+            At(airborne, move, isGrounded());
 
 
             void At(IState from, IState to, Func<bool> condition) => _stateMachine.AddTransition(from, to, condition);
 
             Func<bool> isIdle() => () => MoveVal == 0;
-            Func<bool> isMoving() => () => MoveVal != 0;
+            Func<bool> isMoving() => () => MoveVal != 0 && !Jumped;
             Func<bool> isJumping() => () => Jumped;
-            Func<bool> isFalling() => () => Jumped;
-            Func<bool> isGrounded() => () => Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.1f);
+            Func<bool> isAirborne() => () => !Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _layerMask);
+            Func<bool> isGrounded() => () => Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _layerMask);
             
 
             //Debug.Log("Awake end");
@@ -71,18 +77,21 @@ namespace HMF.Player
 
         public void JumpInput(InputAction.CallbackContext context)
         {
-            if (!context.performed) return;
+            if (!context.performed && Jumped) return;
 
-            Debug.Log($"Jump first: {Jumped}");
+            //Debug.Log($"Jump first: {Jumped}");
 
             Jumped = true;
 
-            Debug.Log($"Jump second: {Jumped}");
+            //Debug.Log($"Jump second: {Jumped}");
 
             //Debug.Log("Jump");
         }
 
-        public void Update() => _stateMachine?.Tick();
+        public void Update() 
+        { 
+            _stateMachine?.Tick();
+        }
 
     }
 }

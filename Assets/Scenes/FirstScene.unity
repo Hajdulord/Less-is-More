@@ -229,9 +229,9 @@ GameObject:
   - component: {fileID: 111245757}
   - component: {fileID: 111245758}
   - component: {fileID: 111245759}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -633,9 +633,9 @@ GameObject:
   m_Component:
   - component: {fileID: 818008318}
   - component: {fileID: 818008319}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Background
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -763,9 +763,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1040951805}
   - component: {fileID: 1040951806}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Global Light 2D
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -933,9 +933,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1929277094}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: --------------------Environment----------------------
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

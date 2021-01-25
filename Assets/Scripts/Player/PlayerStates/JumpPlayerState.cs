@@ -27,8 +27,13 @@ namespace HMF.Player.PlayerStates
 
         public void Tick()
         {
-            _rigidbody2D.velocity += Vector2.up * _player.JumpForce; 
-            Debug.Log("Jump");
+            var appliedVelocity = Vector2.up * _player.JumpForce;
+            appliedVelocity.x = _rigidbody2D.velocity.x;
+
+            _rigidbody2D.velocity = appliedVelocity;
+
+            //Debug.Log(_rigidbody2D.velocity);
+            //Debug.Log("Jump");
         }
     }
 }

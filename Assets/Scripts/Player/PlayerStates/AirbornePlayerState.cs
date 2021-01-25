@@ -4,22 +4,25 @@ using UnityEngine;
 
 namespace HMF
 {
-    public class FallingPlayerState : IState
+    public class AirbornePlayerState : IState
     {
         private PlayerController _playerControler;
 
-        public FallingPlayerState(PlayerController player)
+        public AirbornePlayerState(PlayerController player)
         {
             _playerControler = player;
         }
 
         public void OnEnter(){ }
 
-        public void OnExit() => _playerControler.Jumped = false;
+        public void OnExit()
+        {
+            _playerControler.Jumped = false;
+        }
 
         public void Tick()
         {
-            Debug.Log("Falling");
+            //Debug.Log("Falling");
         }
     }
 }

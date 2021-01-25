@@ -25,7 +25,6 @@ namespace HMF.Player.PlayerStates
         public void OnExit()
         {
             // Stop Move Animation
-            _rigidbody2D.velocity = Vector2.zero;
         }
 
         public void Tick()
@@ -35,7 +34,7 @@ namespace HMF.Player.PlayerStates
             _rigidbody2D.velocity  = _velocity;
             //_rigidbody2D.AddForce(_velocity);
             
-            Debug.Log(_rigidbody2D.velocity);
+            //Debug.Log(_rigidbody2D.velocity);
         }
     }
 }
