@@ -40,7 +40,7 @@ namespace HMF
                 _rigidbody2D.velocity = _velocity;
             }else if (_rigidbody2D.velocity.y > 0)
             {
-                _velocity.y = _rigidbody2D.velocity.y;
+                _velocity = _rigidbody2D.velocity;
                 _velocity.x = _playerControler.MoveVal * _playerControler.movementSpeed;
                 _rigidbody2D.velocity = _velocity;
             }
