@@ -289,4 +289,5 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   movementSpeed: 5
-  JumpForce: 10
+  jumpForce: 12
+  fallMultiplier: 5

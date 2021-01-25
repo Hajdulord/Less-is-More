@@ -18,7 +18,8 @@ namespace HMF.Player
 
         [Header("Player fields")]
         [SerializeField] public float movementSpeed = 5f;
-        [SerializeField] public float JumpForce = 10f;
+        [SerializeField] public float jumpForce = 10f;
+        [SerializeField] public float fallMultiplier = 2.5f;
 
         private StateMachine _stateMachine;
 
