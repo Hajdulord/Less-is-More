@@ -28,7 +28,7 @@ namespace HMF.Player.PlayerStates
         public void Tick()
         {
             var appliedVelocity = Vector2.up * _player.JumpForce;
-            appliedVelocity.x = _rigidbody2D.velocity.x;
+            appliedVelocity.x = _player.MoveVal * _player.movementSpeed;
 
             _rigidbody2D.velocity = appliedVelocity;
 

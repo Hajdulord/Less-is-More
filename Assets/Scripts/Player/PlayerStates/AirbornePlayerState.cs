@@ -7,10 +7,12 @@ namespace HMF
     public class AirbornePlayerState : IState
     {
         private PlayerController _playerControler;
+        private Rigidbody2D _rigidbody2D;
 
-        public AirbornePlayerState(PlayerController player)
+        public AirbornePlayerState(PlayerController player, Rigidbody2D rigidbody2D)
         {
             _playerControler = player;
+            _rigidbody2D = rigidbody2D;
         }
 
         public void OnEnter(){ }
@@ -23,6 +25,10 @@ namespace HMF
         public void Tick()
         {
             //Debug.Log("Falling");
+            Vector2 velocity = Vector2.zero;
+            velocity.x = _playerControler.MoveVal * _playerControler.movementSpeed;
+            velocity.y = _rigidbody2D.velocity.y;
+            _rigidbody2D.velocity = velocity;
         }
     }
 }

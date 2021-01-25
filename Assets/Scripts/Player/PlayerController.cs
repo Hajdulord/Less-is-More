@@ -37,7 +37,7 @@ namespace HMF.Player
             var move = new MovePlayerState(this, _rigidbody2D);
             var attack = new AttackPlayerState();
             var jump = new JumpPlayerState(this, _rigidbody2D);
-            var airborne = new AirbornePlayerState(this);
+            var airborne = new AirbornePlayerState(this, _rigidbody2D);
 
             //_stateMachine.AddAnyTransition(idle, isIdle());
             //_stateMachine.AddAnyTransition(move, moving());
