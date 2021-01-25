@@ -32,7 +32,7 @@ namespace HMF.Player.PlayerStates
 
             _rigidbody2D.velocity = appliedVelocity;
 
-            Debug.Log(_rigidbody2D.velocity);
+            //Debug.Log(_rigidbody2D.velocity);
             //Debug.Log("Jump");
         }
     }

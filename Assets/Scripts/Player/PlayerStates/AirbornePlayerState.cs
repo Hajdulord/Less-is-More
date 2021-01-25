@@ -45,7 +45,7 @@ namespace HMF
                 _rigidbody2D.velocity = _velocity;
             }
             
-            Debug.Log(_velocity);
+            //Debug.Log(_velocity);
         }
     }
 }
