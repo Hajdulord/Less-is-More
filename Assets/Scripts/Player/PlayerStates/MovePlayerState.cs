@@ -36,6 +36,7 @@ namespace HMF.Player.PlayerStates
             
             _rigidbody2D.velocity = Vector2.right * _player.MoveVal * _player.movementSpeed;
             //Debug.Log(_rigidbody2D.velocity);
+            //Debug.Log("Move");
         }
     }
 }
