@@ -18,7 +18,8 @@ namespace HMF.Player
 
         [Header("Player fields")]
         [SerializeField] public float movementSpeed = 5f;
-        [SerializeField] public float JumpForce = 10f;
+        [SerializeField] public float jumpForce = 10f;
+        [SerializeField] public float fallMultiplier = 2.5f;
 
         private StateMachine _stateMachine;
 
@@ -37,19 +38,19 @@ namespace HMF.Player
             var move = new MovePlayerState(this, _rigidbody2D);
             var attack = new AttackPlayerState();
             var jump = new JumpPlayerState(this, _rigidbody2D);
-            var airborne = new AirbornePlayerState(this);
+            var airborne = new AirbornePlayerState(this, _rigidbody2D);
 
             //_stateMachine.AddAnyTransition(idle, isIdle());
             //_stateMachine.AddAnyTransition(move, moving());
             At(idle, move, isMoving());
             At(move, idle, isIdle());
-            At(move, move, isMoving());
+            //At(move, move, isMoving());
 
             At(idle, jump, isJumping());
             At(move, jump, isJumping());
 
             At(jump, airborne, isJumping());
-            At(airborne, airborne, isAirborne());
+            //At(airborne, airborne, isAirborne());
 
             At(airborne, idle, isGrounded());
             At(airborne, move, isGrounded());
@@ -60,7 +61,7 @@ namespace HMF.Player
             Func<bool> isIdle() => () => MoveVal == 0;
             Func<bool> isMoving() => () => MoveVal != 0 && !Jumped;
             Func<bool> isJumping() => () => Jumped;
-            Func<bool> isAirborne() => () => !Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _layerMask);
+            //Func<bool> isAirborne() => () => !Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _layerMask);
             Func<bool> isGrounded() => () => Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _layerMask);
             
 
@@ -71,7 +72,15 @@ namespace HMF.Player
 
         public void MoveInput(InputAction.CallbackContext context)
         {
-            MoveVal = context.ReadValue<float>();
+            //if (!context.performed) return;
+            if(context.started)
+            {
+                MoveVal = context.ReadValue<float>();
+            }
+            else if(context.canceled)
+            {
+                MoveVal = 0f;
+            }
             //Debug.Log($"MoveVal: {MoveVal}");
         }
 

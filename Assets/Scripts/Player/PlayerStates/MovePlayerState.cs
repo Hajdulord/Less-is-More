@@ -29,12 +29,14 @@ namespace HMF.Player.PlayerStates
 
         public void Tick()
         {
-            _velocity.x = _player.MoveVal * _player.movementSpeed;
+            /*_velocity.x = _player.MoveVal * _player.movementSpeed;
             _velocity.y = _rigidbody2D.velocity.y;
-            _rigidbody2D.velocity  = _velocity;
+            _rigidbody2D.velocity  = _velocity;*/
             //_rigidbody2D.AddForce(_velocity);
             
+            _rigidbody2D.velocity = Vector2.right * _player.MoveVal * _player.movementSpeed;
             //Debug.Log(_rigidbody2D.velocity);
+            //Debug.Log("Move");
         }
     }
 }
