@@ -133,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5952620}
   - component: {fileID: 5952621}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Orb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -781,7 +781,7 @@ GameObject:
   - component: {fileID: 505402353}
   - component: {fileID: 505402354}
   - component: {fileID: 505402355}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Altar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1932,7 +1932,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1218173512}
   - component: {fileID: 1218173513}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Point Light 2D (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
