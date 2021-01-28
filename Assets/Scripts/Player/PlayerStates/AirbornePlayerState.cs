@@ -9,22 +9,27 @@ namespace HMF
         private PlayerController _playerControler;
         private Rigidbody2D _rigidbody2D;
         private Vector2 _velocity;
-        public AirbornePlayerState(PlayerController player, Rigidbody2D rigidbody2D)
+        private Animator _animator;
+
+        public AirbornePlayerState(PlayerController player, Rigidbody2D rigidbody2D, Animator animator)
         {
             _playerControler = player;
             _rigidbody2D = rigidbody2D;
             _velocity = Vector2.zero;
+            _animator = animator;
         }
 
         public void OnEnter()
         { 
             //_velocity = _rigidbody2D.velocity;
+            _animator.SetBool("isFalling", true);
         }
 
         public void OnExit()
         {
             _playerControler.Jumped = false;
             _velocity = Vector2.zero;
+            _animator.SetBool("isFalling", false);
         }
 
         public void Tick()
