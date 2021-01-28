@@ -8,21 +8,25 @@ namespace HMF.Player.PlayerStates
     {
         private PlayerController _player;
         private Rigidbody2D _rigidbody2D;
+        private Animator _animator;
 
-        public JumpPlayerState(PlayerController player, Rigidbody2D rigidbody2D)
+        public JumpPlayerState(PlayerController player, Rigidbody2D rigidbody2D, Animator animator)
         {
             _player = player;
             _rigidbody2D = rigidbody2D;
+            _animator = animator;
         }
 
         public void OnEnter()
         {
             // Start Jump Animation
+            _animator.SetBool("isJumping", true);
         }
 
         public void OnExit()
         {
             // Stop Jump Animation
+            _animator.SetBool("isJumping", false);
         }
 
         public void Tick()

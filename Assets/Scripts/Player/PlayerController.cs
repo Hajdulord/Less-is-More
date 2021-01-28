@@ -15,6 +15,7 @@ namespace HMF.Player
         //[SerializeField] private PlayerInput _playerInput = null;
         [SerializeField] private Rigidbody2D _rigidbody2D = null;
         [SerializeField] private LayerMask _layerMask;
+        [SerializeField] private Transform _transform;
 
         [Header("Player fields")]
         [SerializeField] public float movementSpeed = 5f;
@@ -25,7 +26,24 @@ namespace HMF.Player
 
         private float distToGround;
 
-        public float MoveVal{get; private set;} = 0;
+        private float _moveVal = 0;
+        public float MoveVal
+        {
+            get { return _moveVal; }
+            private set
+            {
+                _moveVal = value;
+
+                if(_moveVal >= 0)
+                {
+                    _transform.rotation = Quaternion.identity;
+                }
+                else if(_moveVal < 0)
+                {
+                    _transform.rotation = new Quaternion(0,-1,0,0);
+                }
+            }
+        }
         public bool Jumped{get; set;} = false;
 
         public void Awake() 
@@ -37,8 +55,8 @@ namespace HMF.Player
             var idle = new IdlePlayerState(_rigidbody2D);
             var move = new MovePlayerState(this, _rigidbody2D, _animator);
             var attack = new AttackPlayerState();
-            var jump = new JumpPlayerState(this, _rigidbody2D);
-            var airborne = new AirbornePlayerState(this, _rigidbody2D);
+            var jump = new JumpPlayerState(this, _rigidbody2D, _animator);
+            var airborne = new AirbornePlayerState(this, _rigidbody2D, _animator);
 
             //_stateMachine.AddAnyTransition(idle, isIdle());
             //_stateMachine.AddAnyTransition(move, moving());
