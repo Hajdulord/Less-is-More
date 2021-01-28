@@ -11,7 +11,7 @@ namespace HMF.Player
     public class PlayerController : MonoBehaviour
     {   
         [Header("Editor references")]
-        //[SerializeField] private Animator _animator = null;
+        [SerializeField] private Animator _animator = null;
         //[SerializeField] private PlayerInput _playerInput = null;
         [SerializeField] private Rigidbody2D _rigidbody2D = null;
         [SerializeField] private LayerMask _layerMask;
@@ -35,7 +35,7 @@ namespace HMF.Player
             _stateMachine = new StateMachine();
 
             var idle = new IdlePlayerState(_rigidbody2D);
-            var move = new MovePlayerState(this, _rigidbody2D);
+            var move = new MovePlayerState(this, _rigidbody2D, _animator);
             var attack = new AttackPlayerState();
             var jump = new JumpPlayerState(this, _rigidbody2D);
             var airborne = new AirbornePlayerState(this, _rigidbody2D);

@@ -8,23 +8,27 @@ namespace HMF.Player.PlayerStates
     {
         private PlayerController _player;
         private Rigidbody2D _rigidbody2D;
+        private Animator _animator;
         private Vector2 _velocity;
 
-        public MovePlayerState(PlayerController player, Rigidbody2D rigidbody2D)
+        public MovePlayerState(PlayerController player, Rigidbody2D rigidbody2D, Animator animator)
         {
             _player = player;
             _rigidbody2D = rigidbody2D;
             _velocity = Vector2.zero;
+            _animator = animator;
         }
 
         public void OnEnter()
         {
             // Start Move Animation
+            _animator.SetBool("isRunning", true);
         }
 
         public void OnExit()
         {
             // Stop Move Animation
+            _animator.SetBool("isRunning", false);
         }
 
         public void Tick()

@@ -29,7 +29,7 @@ namespace HMF
 
         public void Tick()
         {
-            // Debug.Log("Falling");
+            //Debug.Log("Falling");
 
             if(_rigidbody2D.velocity.y < 0)
             {
