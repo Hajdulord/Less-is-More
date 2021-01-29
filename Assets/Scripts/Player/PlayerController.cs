@@ -5,6 +5,7 @@ using HMF.HMFUtilities.DesignPatterns.StatePattern;
 using UnityEngine.InputSystem;
 using HMF.Player.PlayerStates;
 using System;
+using UnityEngine.UI;
 
 namespace HMF.Player
 {
@@ -14,7 +15,8 @@ namespace HMF.Player
         [SerializeField] private Animator _animator = null;
         [SerializeField] private Rigidbody2D _rigidbody2D = null;
         [SerializeField] private LayerMask _jumpLayerMask;
-        [SerializeField] private Transform _spriteTransform;
+        [SerializeField] private Transform _spriteTransform = null;
+        [SerializeField] private List<Image> _hearts = null;
         [SerializeField] public Transform attackPoint;
         [SerializeField] public LayerMask enemyLayers;
 
@@ -30,7 +32,7 @@ namespace HMF.Player
         [SerializeField] public float pushBackTime = 2f;
 
         private float _nextAttackTime = 0f;
-
+        private int _heartsIndex = 4;
         private StateMachine _stateMachine;
 
         private float distToGround;
@@ -158,6 +160,14 @@ namespace HMF.Player
 
             health = Mathf.Max(0, --health);
 
+            var color = _hearts[_heartsIndex].color;
+
+            color.a = 0.5f;
+
+            _hearts[_heartsIndex].color = color;
+
+            _heartsIndex = Mathf.Max(0, --_heartsIndex);
+            
             Debug.Log($"health: {health}, velocity: {_rigidbody2D.velocity}");
         }
 
