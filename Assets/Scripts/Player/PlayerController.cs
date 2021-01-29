@@ -12,15 +12,23 @@ namespace HMF.Player
     {   
         [Header("Editor references")]
         [SerializeField] private Animator _animator = null;
-        //[SerializeField] private PlayerInput _playerInput = null;
         [SerializeField] private Rigidbody2D _rigidbody2D = null;
-        [SerializeField] private LayerMask _layerMask;
-        [SerializeField] private Transform _transform;
+        [SerializeField] private LayerMask _jumpLayerMask;
+        [SerializeField] private Transform _spriteTransform;
+        [SerializeField] public Transform attackPoint;
+        [SerializeField] public LayerMask enemyLayers;
+        
 
         [Header("Player fields")]
+        [SerializeField] public int health = 5;
+        [SerializeField] public int attackDamage = 10;
+        [SerializeField] public float attackRate = 2f;
+        [SerializeField] public float attackRange = 2.5f;
         [SerializeField] public float movementSpeed = 5f;
         [SerializeField] public float jumpForce = 10f;
         [SerializeField] public float fallMultiplier = 2.5f;
+
+        private float _nextAttackTime = 0f;
 
         private StateMachine _stateMachine;
 
@@ -34,17 +42,18 @@ namespace HMF.Player
             {
                 _moveVal = value;
 
-                if(_moveVal >= 0)
+                if(_moveVal > 0)
                 {
-                    _transform.rotation = Quaternion.identity;
+                    _spriteTransform.rotation = Quaternion.identity;
                 }
                 else if(_moveVal < 0)
                 {
-                    _transform.rotation = new Quaternion(0,-1,0,0);
+                    _spriteTransform.rotation = new Quaternion(0,-1,0,0);
                 }
             }
         }
-        public bool Jumped{get; set;} = false;
+        public bool Jumped {get; set;} = false;
+        public bool Attacked {get; set;} = false;
 
         public void Awake() 
         {
@@ -54,34 +63,38 @@ namespace HMF.Player
 
             var idle = new IdlePlayerState(_rigidbody2D);
             var move = new MovePlayerState(this, _rigidbody2D, _animator);
-            var attack = new AttackPlayerState();
+            var attack = new AttackPlayerState(this, _animator);
             var jump = new JumpPlayerState(this, _rigidbody2D, _animator);
             var airborne = new AirbornePlayerState(this, _rigidbody2D, _animator);
 
-            //_stateMachine.AddAnyTransition(idle, isIdle());
-            //_stateMachine.AddAnyTransition(move, moving());
             At(idle, move, isMoving());
             At(move, idle, isIdle());
-            //At(move, move, isMoving());
 
             At(idle, jump, isJumping());
             At(move, jump, isJumping());
 
             At(jump, airborne, isJumping());
-            //At(airborne, airborne, isAirborne());
 
             At(airborne, idle, isGrounded());
             At(airborne, move, isGrounded());
 
+            At(idle, attack, isAttacking());
+            At(jump, attack, isAttacking());
+            At(airborne, attack, isAttacking());
+            At(move, attack, isAttacking());
 
-            void At(IState from, IState to, Func<bool> condition) => _stateMachine.AddTransition(from, to, condition);
+            At(attack, idle, isIdle());
+            At(attack, move, isMoving());
+            At(attack, airborne, isAirborne());
 
-            Func<bool> isIdle() => () => MoveVal == 0;
-            Func<bool> isMoving() => () => MoveVal != 0 && !Jumped;
+            Func<bool> isIdle() => () => MoveVal == 0 && Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _jumpLayerMask);
+            Func<bool> isMoving() => () => MoveVal != 0 && !Jumped && Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _jumpLayerMask);
             Func<bool> isJumping() => () => Jumped;
-            //Func<bool> isAirborne() => () => !Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _layerMask);
-            Func<bool> isGrounded() => () => Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _layerMask);
+            Func<bool> isGrounded() => () => Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _jumpLayerMask);
+            Func<bool> isAirborne() => () => !Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _jumpLayerMask);
+            Func<bool> isAttacking() => () => Attacked;
             
+            void At(IState from, IState to, Func<bool> condition) => _stateMachine.AddTransition(from, to, condition);
 
             //Debug.Log("Awake end");
 
@@ -113,6 +126,23 @@ namespace HMF.Player
             //Debug.Log($"Jump second: {Jumped}");
 
             //Debug.Log("Jump");
+        }
+
+        public void AttackInput(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+            {
+                Attacked = false;
+               return; 
+            } 
+
+            if (Time.time >= _nextAttackTime)
+            {
+               Attacked = true;
+               _nextAttackTime = Time.time + 1f / attackRange;
+            }
+            
+            //Debug.Log("A");
         }
 
         public void Update() 
