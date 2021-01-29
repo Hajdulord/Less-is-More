@@ -48,6 +48,10 @@ namespace HMF
                 _rigidbody2D.velocity = _velocity;
             }
             
+            if (_playerControler.DamageTaken)
+            {
+                _playerControler.PushBack();
+            }
             //Debug.Log(_velocity);
         }
     }

@@ -17,7 +17,6 @@ namespace HMF.Player
         [SerializeField] private Transform _spriteTransform;
         [SerializeField] public Transform attackPoint;
         [SerializeField] public LayerMask enemyLayers;
-        
 
         [Header("Player fields")]
         [SerializeField] public int health = 5;
@@ -27,12 +26,16 @@ namespace HMF.Player
         [SerializeField] public float movementSpeed = 5f;
         [SerializeField] public float jumpForce = 10f;
         [SerializeField] public float fallMultiplier = 2.5f;
+        [SerializeField] public float attackedPushBackForce = 5f;
+        [SerializeField] public float pushBackTime = 2f;
 
         private float _nextAttackTime = 0f;
 
         private StateMachine _stateMachine;
 
         private float distToGround;
+
+        private int dir = 1;
 
         private float _moveVal = 0;
         public float MoveVal
@@ -45,15 +48,19 @@ namespace HMF.Player
                 if(_moveVal > 0)
                 {
                     _spriteTransform.rotation = Quaternion.identity;
+                    dir = 1;
                 }
                 else if(_moveVal < 0)
                 {
                     _spriteTransform.rotation = new Quaternion(0,-1,0,0);
+                    dir = -1;
                 }
             }
         }
         public bool Jumped {get; set;} = false;
         public bool Attacked {get; set;} = false;
+
+        public bool DamageTaken {get; set;} = false;
 
         public void Awake() 
         {
@@ -61,7 +68,7 @@ namespace HMF.Player
             //Debug.Log("Awake start");
             _stateMachine = new StateMachine();
 
-            var idle = new IdlePlayerState(_rigidbody2D);
+            var idle = new IdlePlayerState(this, _rigidbody2D);
             var move = new MovePlayerState(this, _rigidbody2D, _animator);
             var attack = new AttackPlayerState(this, _animator);
             var jump = new JumpPlayerState(this, _rigidbody2D, _animator);
@@ -143,6 +150,22 @@ namespace HMF.Player
             }
             
             //Debug.Log("A");
+        }
+
+        public void TakeDamage()
+        {
+            DamageTaken = true;
+
+            health = Mathf.Max(0, --health);
+
+            Debug.Log($"health: {health}, velocity: {_rigidbody2D.velocity}");
+        }
+
+        public void PushBack()
+        {
+            var force = attackedPushBackForce * -1 * dir;
+
+            _rigidbody2D.velocity += Vector2.right * force;
         }
 
         public void Update() 

@@ -1,7 +1,6 @@
 using System;
 using HMF.HMFUtilities.DesignPatterns.StatePattern;
 using UnityEngine;
-
 namespace HMF.Player.PlayerStates
 {
     public class AttackPlayerState : IState
@@ -10,6 +9,7 @@ namespace HMF.Player.PlayerStates
         private Collider2D _collider;
         private Animator _animator;
         
+        private HMF.Enemy.Enemy _enemy = null;
 
         public AttackPlayerState(PlayerController player, Animator animator)
         {
@@ -22,6 +22,9 @@ namespace HMF.Player.PlayerStates
             //Start Attack Animation
             _animator.SetTrigger("Attacking");
             _collider = Physics2D.OverlapCircle(_player.attackPoint.position, _player.attackRange, _player.enemyLayers);
+
+            if(_collider != null)
+                _enemy = _collider.GetComponent<HMF.Enemy.Enemy>();
         }
 
         public void OnExit() 
@@ -32,9 +35,15 @@ namespace HMF.Player.PlayerStates
 
         public void Tick()
         {
-            if (_collider == null) return;
+            if (_collider == null && _enemy == null) return;
 
-            Debug.Log(_collider.name);
+            _enemy.TakeDamage(_player.attackDamage);
+            Debug.Log(_enemy.health);
+
+            if (_player.DamageTaken)
+            {
+                _player.PushBack();
+            }
         }
     }
 }

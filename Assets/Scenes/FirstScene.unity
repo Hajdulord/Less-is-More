@@ -1378,7 +1378,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!43 &854676653
+--- !u!43 &820005717
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2370,6 +2370,8 @@ MonoBehaviour:
   movementSpeed: 5
   jumpForce: 10
   fallMultiplier: 4
+  attackedPushBackForce: 10
+  pushBackTime: 1.5
 --- !u!114 &1239536530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2497,8 +2499,8 @@ MonoBehaviour:
   - {x: -0.31131172, y: 0.02617693, z: 0}
   - {x: -0.3804354, y: -0.5186496, z: 0}
   m_ShapePathHash: 1813626954
-  m_Mesh: {fileID: 854676653}
-  m_InstanceId: 39280
+  m_Mesh: {fileID: 820005717}
+  m_InstanceId: 20290
 --- !u!50 &1239536533
 Rigidbody2D:
   serializedVersion: 4
@@ -3443,6 +3445,7 @@ GameObject:
   - component: {fileID: 1929403212}
   - component: {fileID: 1929403213}
   - component: {fileID: 1929403214}
+  - component: {fileID: 1929403215}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
@@ -3525,7 +3528,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -3541,6 +3544,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.56, y: 2.56}
   m_EdgeRadius: 0
+--- !u!114 &1929403215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929403211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8312f46cf0b413b42986bcb24eded2eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 50
 --- !u!1 &1959470916
 GameObject:
   m_ObjectHideFlags: 0
