@@ -38,7 +38,7 @@ namespace HMF.Player.PlayerStates
             if (_collider == null && _enemy == null) return;
 
             _enemy.TakeDamage(_player.attackDamage);
-            Debug.Log(_enemy.health);
+            //Debug.Log(_enemy.health);
 
             if (_player.DamageTaken)
             {

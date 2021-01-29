@@ -1,21 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using HMF.HMFUtilities.DesignPatterns.StatePattern;
 
-namespace HMF
+namespace HMF.Player.PlayerStates
 {
-    public class DeathPlayerState : MonoBehaviour
+    public class DeathPlayerState : IState
     {
-        // Start is called before the first frame update
-        void Start()
+        private PlayerController _player;
+        public DeathPlayerState(PlayerController controller)
         {
-        
+            _player = controller;
         }
 
-        // Update is called once per frame
-        void Update()
+        public void OnEnter()
         {
-        
+            _player.Revive();
+        }
+
+        public void OnExit()
+        {
+            
+        }
+
+        public void Tick()
+        {
+            
         }
     }
 }

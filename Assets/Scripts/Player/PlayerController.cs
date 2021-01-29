@@ -19,6 +19,8 @@ namespace HMF.Player
         [SerializeField] private List<Image> _hearts = null;
         [SerializeField] public Transform attackPoint;
         [SerializeField] public LayerMask enemyLayers;
+        [SerializeField] private Transform _respawn;
+        [SerializeField] private GameObject _blocade;
 
         [Header("Player fields")]
         [SerializeField] public int health = 5;
@@ -75,6 +77,7 @@ namespace HMF.Player
             var attack = new AttackPlayerState(this, _animator);
             var jump = new JumpPlayerState(this, _rigidbody2D, _animator);
             var airborne = new AirbornePlayerState(this, _rigidbody2D, _animator);
+            var death = new DeathPlayerState(this);
 
             At(idle, move, isMoving());
             At(move, idle, isIdle());
@@ -96,12 +99,21 @@ namespace HMF.Player
             At(attack, move, isMoving());
             At(attack, airborne, isAirborne());
 
+            At(idle, death, isDead());
+            At(jump, death, isDead());
+            At(airborne, death, isDead());
+            At(move, death, isDead());
+
+            At(death, idle, isAlive());
+
             Func<bool> isIdle() => () => MoveVal == 0 && Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _jumpLayerMask);
             Func<bool> isMoving() => () => MoveVal != 0 && !Jumped && Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _jumpLayerMask);
             Func<bool> isJumping() => () => Jumped;
             Func<bool> isGrounded() => () => Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _jumpLayerMask);
             Func<bool> isAirborne() => () => !Physics2D.Raycast(transform.position, Vector2.down, distToGround + 0.05f, _jumpLayerMask);
             Func<bool> isAttacking() => () => Attacked;
+            Func<bool> isDead() => () => health <= 0;
+            Func<bool> isAlive() => () => health > 0;
             
             void At(IState from, IState to, Func<bool> condition) => _stateMachine.AddTransition(from, to, condition);
 
@@ -148,13 +160,13 @@ namespace HMF.Player
             if (Time.time >= _nextAttackTime)
             {
                Attacked = true;
-               _nextAttackTime = Time.time + 1f / attackRange;
+               _nextAttackTime = Time.time + 1f / attackRate;
             }
             
             //Debug.Log("A");
         }
 
-        public void TakeDamage()
+        public void TakeDamageFromCollision()
         {
             DamageTaken = true;
 
@@ -167,8 +179,24 @@ namespace HMF.Player
             _hearts[_heartsIndex].color = color;
 
             _heartsIndex = Mathf.Max(0, --_heartsIndex);
-            
-            Debug.Log($"health: {health}, velocity: {_rigidbody2D.velocity}");
+
+            //Debug.Log($"health: {health}, velocity: {_rigidbody2D.velocity}");
+        }
+
+        public void TakeDamage()
+        {
+
+            health = Mathf.Max(0, --health);
+
+            var color = _hearts[_heartsIndex].color;
+
+            color.a = 0.5f;
+
+            _hearts[_heartsIndex].color = color;
+
+            _heartsIndex = Mathf.Max(0, --_heartsIndex);
+
+            //Debug.Log($"health: {health}, velocity: {_rigidbody2D.velocity}");
         }
 
         public void PushBack()
@@ -176,6 +204,22 @@ namespace HMF.Player
             var force = attackedPushBackForce * -1 * dir;
 
             _rigidbody2D.velocity += Vector2.right * force;
+        }
+
+        public void Revive()
+        {
+            health = 5;
+            foreach(var heart in _hearts)
+            {
+                var color = heart.color;
+
+                color.a = 1f;
+
+                heart.color = color;
+            }
+            transform.position = _respawn.position;
+            _blocade.GetComponent<Blocade>().Re();
+            _heartsIndex = 4;
         }
 
         public void Update() 
